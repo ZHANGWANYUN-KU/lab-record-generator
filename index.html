@@ -146,82 +146,112 @@
             }
         };
 
-        // --- 纸张尺寸定义 ---
+        // --- 纸张尺寸定义与动态排版设置 ---
         const PAPER_SIZES = {
-            '16K': { width: '195mm', height: '270mm', name: '16K (195x270mm)' },
-            'A4': { width: '210mm', height: '297mm', name: 'A4 (210x297mm)' },
-            'Letter': { width: '215.9mm', height: '279.4mm', name: 'Letter (8.5x11")' }
+            'A4': { width: '210mm', height: '297mm', name: 'A4 (210x297mm)', padding: '20mm', baseSize: '10pt', headerSize: '11pt', titleSize: '11pt', textSize: '9.5pt', tinySize: '8pt', gap: '1.25rem', innerGap: '0.75rem' },
+            'Letter': { width: '215.9mm', height: '279.4mm', name: 'Letter (8.5x11")', padding: '20mm', baseSize: '10pt', headerSize: '11pt', titleSize: '11pt', textSize: '9.5pt', tinySize: '8pt', gap: '1.25rem', innerGap: '0.75rem' },
+            'B5': { width: '176mm', height: '250mm', name: 'B5 (176x250mm)', padding: '18mm', baseSize: '9pt', headerSize: '10pt', titleSize: '9.5pt', textSize: '8.5pt', tinySize: '7.5pt', gap: '1rem', innerGap: '0.65rem' },
+            '16K': { width: '195mm', height: '270mm', name: '16K (195x270mm)', padding: '15mm', baseSize: '9pt', headerSize: '10pt', titleSize: '9pt', textSize: '8pt', tinySize: '7.5pt', gap: '1rem', innerGap: '0.5rem' },
+            'Custom15x25': { width: '150mm', height: '250mm', name: '自定义 (15x25cm)', padding: '12mm', baseSize: '8.5pt', headerSize: '9.5pt', titleSize: '8.5pt', textSize: '7.5pt', tinySize: '6.5pt', gap: '0.75rem', innerGap: '0.35rem' },
+            'A5': { width: '148mm', height: '210mm', name: 'A5 (148x210mm)', padding: '12mm', baseSize: '8pt', headerSize: '9pt', titleSize: '8.5pt', textSize: '7.5pt', tinySize: '6.5pt', gap: '0.75rem', innerGap: '0.35rem' }
         };
+
+        // --- 默认模板数据 ---
+        const defaultMeta = {
+            title: 'Plasmid Construction and Transformation Record',
+            experimentId: 'EXP-2023-10-01',
+            date: new Date().toISOString().split('T')[0],
+            time: '14:30',
+            researcher: 'Zhang Wanyun',
+            labName: 'Hidenobu Mizuno lab',
+            supervisor: 'Prof. Mizuno'
+        };
+
+        const initialSections = [
+            {
+                id: 'sec-objects',
+                title: '1. Materials & Objects',
+                type: 'mixed-list',
+                items: [
+                    { id: 'item-1', type: 'animal', animalType: 'Mouse', age: 'E14', group: 'Con', side: 'Right', note: '' },
+                    { id: 'item-2', type: 'animal', animalType: 'Pup', age: 'P13', group: 'Exp 1', side: 'Left', note: '' },
+                    { id: 'item-3', type: 'animal', animalType: 'Mouse', age: 'P15', group: 'Exp 2', side: 'Right', note: '' },
+                    { id: 'item-4', type: 'animal', animalType: 'Pup', age: 'P14', group: 'Con', side: 'Right', note: '' }
+                ]
+            },
+            {
+                id: 'sec-plasmid',
+                title: '2. Plasmid Information',
+                type: 'text',
+                content: 'Name: pEGFP-C1-GeneX\nAntibiotic: Kanamycin\nSize: ~5.9 kb\nFeatures: \n  - Promoter: CMV IE\n  - Tag: EGFP (N-term)\n  - Cloning sites: EcoRI / BamHI'
+            },
+            {
+                id: 'sec-protocol',
+                title: '3. Protocol',
+                type: 'protocol-sections',
+                subsections: [
+                    {
+                        id: 'subsec-iue',
+                        title: 'IUE',
+                        content: '1. Prepare all instruments and reagents before starting.\n2. Connect the platinum-plated electrodes (P13 or P14) to the electroporator (red-to-red, black-to-black). Power on the system, click New Protocol → select E15 → switch to Standby.\n3. Surface-sterilize and set out all supplies: Pasteur pipette, saline, scissors, sutures (needle/thread), mouth-controlled micropipette, pipettes/tips, DNA sample (30 µl), trypan blue (2.5 µl), tissues, cello tape, light source, surgical stage, and forceps.\n4. Load 2–3 ml isoflurane into the anesthesia unit using a glass syringe. Press Fast Forward and tighten securely. Set Air: 200 ml and Isoflurane: 1–2%, then lock the settings.\n5. Position the anesthesia tubing at the mouse’s nose and secure it with cello tape.\n6. Insert the capillary into the rubber tubing (use a small paper strip for stability). Fill with DNA solution and test on tissue to confirm smooth flow.\n7. Prepare the stage with a tissue towel and secure it with cello tape.\n8. Prepare a 1-ml syringe with 50 µl pentobarbital, diluted 5× with saline (final volume 250 µl).\n9. Gently handle the timed-pregnant mouse. Briefly touch the injection site, then inject 0.3 ml pentobarbital intraperitoneally. Return the mouse to the cage for 3–4 min until fully anesthetized. Place it on the stage and tape the limbs (forelimbs up, hindlimbs down).\n10. Disinfect the abdomen with 70% ethanol. Make a midline incision through the outer skin using large forceps and scissors. Remove any attached muscle, add saline, then open the thin inner membrane along the white midline using small forceps and scissors.\n11. Retract the inner membrane laterally with two scissors. Cover the exposed area with tissue, add saline, and adjust the opening as needed.\n12. Gently lift E15 embryos with ring forceps and keep them moist with saline. Confirm the skull midline. Inject DNA into the right lateral ventricle using a mouth-controlled micropipette. Blue dye in the ventricle confirms successful injection.\n13. Deliver pulses while keeping the area moist with saline: 50 ms square pulses, 1 Hz, 5 pulses. Place the positive electrode on the injection side.\nNote: Inject as many embryos as possible within 30–45 min from the start of the procedure.\n14. Return embryos to the abdominal cavity, add saline, and suture the inner and outer layers. Secure with knots at the top and bottom.\n15. Place the mouse in a cage on a 38°C slide warmer. Disinfect the work area and instruments with 70% ethanol.',
+                        selected: false
+                    },
+                    {
+                        id: 'subsec-perfusion',
+                        title: 'Perfusion',
+                        content: '1. CAG-GCaMP–positive mice were examined under a compound microscope using a blue filter in the dark.\n2. Mice were anesthetized by intraperitoneal injection of 0.3 ml pentobarbital.\n3. A midline incision was made until the rib cage was visible, and the tissue was carefully opened to both sides. The rib cage was gently lifted/punctured with a pipette tip and held back to fully expose the heart.\n4. Transcardial perfusion was performed with saline (15–20 ml per mouse) by injecting into the left ventricle, ensuring there were no air bubbles in the tubing, and opening the right atrium to completely flush blood from the circulation.\nNote: Perfusion was stopped once the organs changed from red to pale/white.\n5. The head was separated from the body; the skin was opened along the midline and attached muscles were removed.\n6. The skull was opened near the cerebellar region by cutting along the midline and both sides.\n7. The skull was lifted upward and removed.\n8. The brain was gently transferred into a 15-ml Falcon tube containing 2 ml of 4% PFA fixative and stored overnight at 4°C.',
+                        selected: false
+                    },
+                    {
+                        id: 'subsec-flatten',
+                        title: 'Flatten',
+                        content: '1. Separate the right and left cerebral hemispheres, rinse in 1× PBS 500 ml — 1× PBS: 50 ml 10× PBS in 450 ml MQ, and remove any extra attached tissue.\n2. Sandwich the tissues between two clean, non-coated glass slides by placing small pieces of glass on both sides, and hold them tightly in place using black clips.\n3. Then immerse in 30% sucrose/2% PFA solution 15 ml — Stock 60% sucrose/15 ml — 4% PFA in a 50-ml Falcon tube.\n4. Wrap in aluminum foil, label, and store at 4°C for a maximum of 16–24 hours.',
+                        selected: false
+                    },
+                    { id: 'subsec-imaging', title: 'Imaging', content: 'Imaging protocol steps...', selected: false },
+                    { id: 'subsec-immunostaining', title: 'Immunostaining', content: 'Immunostaining protocol steps...', selected: false, timePoints: [] }
+                ]
+            },
+            {
+                id: 'sec-results',
+                title: '4. Expected Results & Notes',
+                type: 'text',
+                content: 'Colonies are expected on the experimental plate. The negative control (no plasmid) should show no growth. Pick single colonies for colony PCR verification.'
+            }
+        ];
 
         // --- 主组件 ---
         const App = () => {
-            // 初始数据结构
-            const initialSections = [
-                {
-                    id: 'sec-objects',
-                    title: '1. Materials & Objects',
-                    type: 'mixed-list',
-                    items: [
-                        { id: 'item-1', type: 'animal', animalType: 'Mouse', age: 'E14', group: 'Con', side: 'Right', note: '' },
-                        { id: 'item-2', type: 'animal', animalType: 'Pup', age: 'P13', group: 'Exp 1', side: 'Left', note: '' },
-                        { id: 'item-3', type: 'animal', animalType: 'Mouse', age: 'P15', group: 'Exp 2', side: 'Right', note: '' },
-                        { id: 'item-4', type: 'animal', animalType: 'Pup', age: 'P14', group: 'Con', side: 'Right', note: '' }
-                    ]
-                },
-                {
-                    id: 'sec-plasmid',
-                    title: '2. Plasmid Information',
-                    type: 'text',
-                    content: 'Name: pEGFP-C1-GeneX\nAntibiotic: Kanamycin\nSize: ~5.9 kb\nFeatures: \n  - Promoter: CMV IE\n  - Tag: EGFP (N-term)\n  - Cloning sites: EcoRI / BamHI'
-                },
-                {
-                    id: 'sec-protocol',
-                    title: '3. Protocol',
-                    type: 'protocol-sections',
-                    subsections: [
-                        {
-                            id: 'subsec-iue',
-                            title: 'IUE',
-                            content: '1. Prepare all instruments and reagents before starting.\n2. Connect the platinum-plated electrodes (P13 or P14) to the electroporator (red-to-red, black-to-black). Power on the system, click New Protocol → select E15 → switch to Standby.\n3. Surface-sterilize and set out all supplies: Pasteur pipette, saline, scissors, sutures (needle/thread), mouth-controlled micropipette, pipettes/tips, DNA sample (30 µl), trypan blue (2.5 µl), tissues, cello tape, light source, surgical stage, and forceps.\n4. Load 2–3 ml isoflurane into the anesthesia unit using a glass syringe. Press Fast Forward and tighten securely. Set Air: 200 ml and Isoflurane: 1–2%, then lock the settings.\n5. Position the anesthesia tubing at the mouse’s nose and secure it with cello tape.\n6. Insert the capillary into the rubber tubing (use a small paper strip for stability). Fill with DNA solution and test on tissue to confirm smooth flow.\n7. Prepare the stage with a tissue towel and secure it with cello tape.\n8. Prepare a 1-ml syringe with 50 µl pentobarbital, diluted 5× with saline (final volume 250 µl).\n9. Gently handle the timed-pregnant mouse. Briefly touch the injection site, then inject 0.3 ml pentobarbital intraperitoneally. Return the mouse to the cage for 3–4 min until fully anesthetized. Place it on the stage and tape the limbs (forelimbs up, hindlimbs down).\n10. Disinfect the abdomen with 70% ethanol. Make a midline incision through the outer skin using large forceps and scissors. Remove any attached muscle, add saline, then open the thin inner membrane along the white midline using small forceps and scissors.\n11. Retract the inner membrane laterally with two scissors. Cover the exposed area with tissue, add saline, and adjust the opening as needed.\n12. Gently lift E15 embryos with ring forceps and keep them moist with saline. Confirm the skull midline. Inject DNA into the right lateral ventricle using a mouth-controlled micropipette. Blue dye in the ventricle confirms successful injection.\n13. Deliver pulses while keeping the area moist with saline: 50 ms square pulses, 1 Hz, 5 pulses. Place the positive electrode on the injection side.\nNote: Inject as many embryos as possible within 30–45 min from the start of the procedure.\n14. Return embryos to the abdominal cavity, add saline, and suture the inner and outer layers. Secure with knots at the top and bottom.\n15. Place the mouse in a cage on a 38°C slide warmer. Disinfect the work area and instruments with 70% ethanol.',
-                            selected: false
-                        },
-                        {
-                            id: 'subsec-perfusion',
-                            title: 'Perfusion',
-                            content: '1. CAG-GCaMP–positive mice were examined under a compound microscope using a blue filter in the dark.\n2. Mice were anesthetized by intraperitoneal injection of 0.3 ml pentobarbital.\n3. A midline incision was made until the rib cage was visible, and the tissue was carefully opened to both sides. The rib cage was gently lifted/punctured with a pipette tip and held back to fully expose the heart.\n4. Transcardial perfusion was performed with saline (15–20 ml per mouse) by injecting into the left ventricle, ensuring there were no air bubbles in the tubing, and opening the right atrium to completely flush blood from the circulation.\nNote: Perfusion was stopped once the organs changed from red to pale/white.\n5. The head was separated from the body; the skin was opened along the midline and attached muscles were removed.\n6. The skull was opened near the cerebellar region by cutting along the midline and both sides.\n7. The skull was lifted upward and removed.\n8. The brain was gently transferred into a 15-ml Falcon tube containing 2 ml of 4% PFA fixative and stored overnight at 4°C.',
-                            selected: false
-                        },
-                        {
-                            id: 'subsec-flatten',
-                            title: 'Flatten',
-                            content: '1. Separate the right and left cerebral hemispheres, rinse in 1× PBS 500 ml — 1× PBS: 50 ml 10× PBS in 450 ml MQ, and remove any extra attached tissue.\n2. Sandwich the tissues between two clean, non-coated glass slides by placing small pieces of glass on both sides, and hold them tightly in place using black clips.\n3. Then immerse in 30% sucrose/2% PFA solution 15 ml — Stock 60% sucrose/15 ml — 4% PFA in a 50-ml Falcon tube.\n4. Wrap in aluminum foil, label, and store at 4°C for a maximum of 16–24 hours.',
-                            selected: false
-                        },
-                        { id: 'subsec-imaging', title: 'Imaging', content: 'Imaging protocol steps...', selected: false },
-                        { id: 'subsec-immunostaining', title: 'Immunostaining', content: 'Immunostaining protocol steps...', selected: false, timePoints: [] }
-                    ]
-                },
-                {
-                    id: 'sec-results',
-                    title: '4. Expected Results & Notes',
-                    type: 'text',
-                    content: 'Colonies are expected on the experimental plate. The negative control (no plasmid) should show no growth. Pick single colonies for colony PCR verification.'
+            // 初始化数据，尝试从本地缓存读取
+            const [meta, setMeta] = useState(() => {
+                try {
+                    const savedMeta = localStorage.getItem('labRecordMeta');
+                    return savedMeta ? JSON.parse(savedMeta) : defaultMeta;
+                } catch {
+                    return defaultMeta;
                 }
-            ];
-
-            const [meta, setMeta] = useState({
-                title: 'Plasmid Construction and Transformation Record',
-                experimentId: 'EXP-2023-10-01',
-                date: new Date().toISOString().split('T')[0],
-                time: '14:30',
-                researcher: 'Zhang Wanyun',
-                labName: 'Hidenobu Mizuno lab',
-                supervisor: 'Prof. Mizuno'
             });
 
-            const [sections, setSections] = useState(initialSections);
+            const [sections, setSections] = useState(() => {
+                try {
+                    const savedSections = localStorage.getItem('labRecordSections');
+                    return savedSections ? JSON.parse(savedSections) : initialSections;
+                } catch {
+                    return initialSections;
+                }
+            });
+
             const [selectedSubsection, setSelectedSubsection] = useState({});
-            const [paperSize, setPaperSize] = useState('16K');
+            const [paperSize, setPaperSize] = useState('Custom15x25');
+
+            // --- 自动保存到本地缓存 ---
+            useEffect(() => {
+                localStorage.setItem('labRecordMeta', JSON.stringify(meta));
+            }, [meta]);
+
+            useEffect(() => {
+                localStorage.setItem('labRecordSections', JSON.stringify(sections));
+            }, [sections]);
 
             // 动态设置打印样式
             useEffect(() => {
@@ -428,18 +458,12 @@
                 }, 500);
             };
 
-            const handleReset = () => {
-                if (window.confirm('是否重置为默认模板？')) {
+            const handleClearCache = () => {
+                if (window.confirm('确定要清除本地缓存并重置为默认模板吗？此操作不可撤销。')) {
+                    localStorage.removeItem('labRecordMeta');
+                    localStorage.removeItem('labRecordSections');
                     setSections(initialSections);
-                    setMeta({
-                        title: 'Plasmid Construction and Transformation Record',
-                        experimentId: 'EXP-2023-10-01',
-                        date: new Date().toISOString().split('T')[0],
-                        time: '14:30',
-                        researcher: 'Zhang Wanyun',
-                        labName: 'Hidenobu Mizuno lab',
-                        supervisor: 'Prof. Mizuno'
-                    });
+                    setMeta(defaultMeta);
                 }
             };
 
@@ -469,7 +493,7 @@
                                 >
                                     {aiLoading ? <div className="loader" /> : <IconSparkles className="w-4 h-4" />}
                                 </button>
-                                <button onClick={handleReset} className="text-gray-400 hover:text-red-500 transition-colors p-1.5" title="重置">
+                                <button onClick={handleClearCache} className="text-gray-400 hover:text-red-500 transition-colors p-1.5" title="清除缓存并重置模板">
                                     <IconRotateCcw className="w-4 h-4" />
                                 </button>
                             </div>
@@ -747,7 +771,7 @@
                         </div>
                     </div>
 
-                    {/* --- 右侧面板：16K 预览区域 --- */}
+                    {/* --- 右侧面板：预览区域 --- */}
                     <div className="print-visible flex-1 bg-gray-200 p-8 overflow-y-auto print:p-0 print:bg-white print:overflow-visible">
 
                         <div
@@ -755,13 +779,13 @@
                             style={{
                                 width: PAPER_SIZES[paperSize].width,
                                 minHeight: PAPER_SIZES[paperSize].height,
-                                padding: '15mm 15mm',
+                                padding: PAPER_SIZES[paperSize].padding,
                             }}
                         >
                             {/* --- 简洁头部 --- */}
                             <header className="mb-4 border-b-2 border-black pb-2 font-serif">
-                                <div className="flex justify-between items-end text-[9pt] text-black">
-                                    <div className="italic font-bold text-[10pt]">{meta.labName}</div>
+                                <div className="flex justify-between items-end text-black" style={{ fontSize: PAPER_SIZES[paperSize].baseSize }}>
+                                    <div className="italic font-bold" style={{ fontSize: PAPER_SIZES[paperSize].headerSize }}>{meta.labName}</div>
 
                                     <div className="flex gap-6">
                                         <span><strong>Date:</strong> {meta.date} {meta.time}</span>
@@ -772,14 +796,14 @@
                             </header>
 
                             {/* --- 内容区域 --- */}
-                            <div className="flex-1 space-y-4 font-serif">
+                            <div className="flex-1 flex flex-col font-serif" style={{ gap: PAPER_SIZES[paperSize].gap }}>
                                 {sections.map((section) => (
                                     <section key={section.id} className="break-inside-avoid">
-                                        <h2 className="text-[9pt] font-bold text-black mb-1 uppercase border-b border-gray-400 inline-block pr-2">
+                                        <h2 className="font-bold text-black mb-1 uppercase border-b border-gray-400 inline-block pr-2" style={{ fontSize: PAPER_SIZES[paperSize].titleSize }}>
                                             {section.title}
                                         </h2>
 
-                                        <div className="text-[8pt] leading-snug text-justify text-black mt-1 pl-1">
+                                        <div className="leading-snug text-justify text-black mt-1 pl-1" style={{ fontSize: PAPER_SIZES[paperSize].textSize }}>
                                             {section.type === 'mixed-list' ? (
                                                 <div className="grid grid-cols-2 gap-x-6 gap-y-1">
                                                     {section.items?.map((item, idx) => (
@@ -797,15 +821,15 @@
                                                     ))}
                                                 </div>
                                             ) : section.type === 'protocol-sections' ? (
-                                                <div className="space-y-3">
+                                                <div className="flex flex-col" style={{ gap: PAPER_SIZES[paperSize].innerGap }}>
                                                     {section.subsections?.filter(subsec => subsec.selected).map((subsec) => (
                                                         <div key={subsec.id}>
-                                                            <div className="font-bold text-[8pt] mb-0.5">[{subsec.title}]</div>
-                                                            {subsec.content && <div className="whitespace-pre-wrap pl-2 mb-1">{subsec.content}</div>}
+                                                            <div className="font-bold mb-0.5">[{subsec.title}]</div>
+                                                            {subsec.content && <div className="whitespace-pre-wrap pl-2 mb-1" style={{ fontSize: PAPER_SIZES[paperSize].textSize }}>{subsec.content}</div>}
                                                             {subsec.id === 'subsec-immunostaining' && subsec.timePoints && subsec.timePoints.length > 0 && (
-                                                                <div className="pl-4 mt-2 border-l-2 border-gray-100 py-1 space-y-1">
+                                                                <div className="pl-4 mt-2 border-l-2 border-gray-100 py-1 flex flex-col" style={{ gap: '0.25rem' }}>
                                                                     {subsec.timePoints.map(tp => (
-                                                                        <div key={tp.id} className="text-[7.5pt] flex items-center gap-2">
+                                                                        <div key={tp.id} className="flex items-center gap-2" style={{ fontSize: PAPER_SIZES[paperSize].tinySize }}>
                                                                             <span className="font-bold min-w-[120px]">⏰ {tp.date} {tp.time}</span>
                                                                             {tp.label && <span className="text-gray-600 italic"> — {tp.label}</span>}
                                                                         </div>
@@ -816,7 +840,7 @@
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="whitespace-pre-wrap">{section.content}</div>
+                                                <div className="whitespace-pre-wrap" style={{ fontSize: PAPER_SIZES[paperSize].textSize }}>{section.content}</div>
                                             )}
                                         </div>
                                     </section>
@@ -824,7 +848,7 @@
                             </div>
 
                             {/* --- 页脚 --- */}
-                            <footer className="mt-auto pt-4 border-t border-black flex justify-between items-end text-[7pt] font-serif text-black">
+                            <footer className="mt-auto pt-4 border-t border-black flex justify-between items-end font-serif text-black" style={{ fontSize: PAPER_SIZES[paperSize].tinySize }}>
                                 <div>{meta.date}</div>
                                 <div>第 1 页</div>
                             </footer>
