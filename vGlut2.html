@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Record: vGlut2 Immunofluorescence (Free-floating)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            /* Custom paper size 195mm x 270mm */
+            max-width: 195mm;
+            min-height: 270mm;
+            margin: 10px auto;
+            /* Compact padding */
+            padding: 25px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            color: #003366;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 3px;
+            /* Compact margins */
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        h2 {
+            font-size: 15px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* Top Info Bar - Compact */
+        .header-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+            background-color: #eef4fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #dcebf7;
+        }
+
+        .header-info label {
+            font-weight: bold;
+            margin-right: 5px;
+            min-width: 90px;
+            /* Increased slightly for English labels */
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            border: 1px solid #ccc;
+            padding: 4px;
+            border-radius: 3px;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        /* Day Date Input Specific Style */
+        .day-date-input {
+            width: auto !important;
+            /* Override global width */
+            display: inline-block;
+            margin-left: 10px;
+            margin-right: 10px;
+            font-weight: normal;
+            color: #555;
+            padding: 2px 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            border-color: #003366;
+            outline: none;
+        }
+
+        /* Handwriting underline style */
+        .handwrite-line {
+            display: inline-block;
+            border-bottom: 1px solid #333;
+            min-width: 60px;
+            height: 18px;
+        }
+
+        .time-box {
+            display: inline-block;
+            width: 70px;
+            border-bottom: 1px solid #999;
+            height: 18px;
+        }
+
+        /* Diagram Style - Compact */
+        .plate-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .well-container {
+            text-align: center;
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .well-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #003366;
+            background-color: #e3f2fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 9px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .well-label {
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .well-desc {
+            font-size: 9px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #003366;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+
+        /* Button Styles */
+        .file-upload-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-label-text {
+            margin-top: 8px;
+        }
+
+        /* Image Upload Area - Compact */
+        .custom-image-area {
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .custom-image-placeholder {
+            max-width: 100%;
+            max-height: 150px;
+            display: none;
+            margin: 5px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-image-placeholder.show {
+            display: block;
+        }
+
+        .file-upload-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Table Style - Compact */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6;
+            padding: 5px 8px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #003366;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Highlight Steps */
+        .critical-step {
+            background-color: #fff0f0 !important;
+            border-left: 3px solid #d9534f;
+        }
+
+        .dark-step {
+            background-color: #f3e5f5 !important;
+            border-left: 3px solid #9c27b0;
+        }
+
+        /* Checkbox Style */
+        .checkbox-cell {
+            text-align: center;
+            width: 40px;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #003366;
+        }
+
+        /* Notes Area - Compact */
+        .notes-area {
+            width: 100%;
+            height: 60px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 13px;
+            background-color: #fffff8;
+        }
+
+        /* Alert Box - Compact */
+        .alert-box {
+            background: #fff3cd;
+            padding: 8px;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        /* Print Button */
+        .btn-print {
+            display: block;
+            width: 180px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-print:hover {
+            background-color: #218838;
+        }
+
+        /* Print Specific Styles */
+        @media print {
+            @page {
+                size: 195mm 270mm;
+                /* Specify custom size for printer */
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 10mm;
+                width: 195mm;
+                min-height: 270mm;
+                box-shadow: none;
+                background: white;
+            }
+
+            .btn-print,
+            .file-upload-btn {
+                display: none;
+            }
+
+            .module-selection {
+                display: none !important;
+            }
+
+            input[type="checkbox"] {
+                -webkit-appearance: checkbox;
+                appearance: checkbox;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📝 Lab Record: vGlut2 Immunofluorescence</h1>
+    <div style="text-align: center; margin-bottom: 15px; font-size: 0.9em; color: #666;">
+        Strategy: In-well Antibody Addition &nbsp;|&nbsp; Sample: Free-floating Flattened Sections
+    </div>
+
+    <div class="header-info">
+        <div><label>Start Date:</label> <input type="date" id="expDate"></div>
+        <div><label>Operator:</label> <input type="text" id="operator"></div>
+        <div><label>Sample ID:</label> <input type="text" id="sampleId"></div>
+        <div><label>Primary Ab Lot:</label> <input type="text" placeholder="Rabbit anti-vGlut2"
+                value="Rabbit anti-vGlut2 (Synaptic Systems)"></div>
+    </div>
+
+    <!-- Module Selection Panel -->
+    <div class="module-selection"
+        style="background-color: #f8f9fa; padding: 12px; border-radius: 5px; border: 1px solid #dee2e6; margin-bottom: 15px;">
+        <div style="font-weight: bold; margin-bottom: 8px; color: #003366;">📋 Select Modules to Include:</div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="toggleDay0" checked onchange="toggleModule('day0Section')"
+                    style="margin-right: 5px; width: 18px; height: 18px;">
+                <span>Day 0: Prep & Flattening</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="toggleDay1" checked onchange="toggleModule('day1Section')"
+                    style="margin-right: 5px; width: 18px; height: 18px;">
+                <span>Day 1: Blocking & Primary Ab</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="toggleDay2" checked onchange="toggleModule('day2Section')"
+                    style="margin-right: 5px; width: 18px; height: 18px;">
+                <span>Day 2: Washing & Mounting</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="toggleDiagram" checked onchange="toggleModule('diagramSection')"
+                    style="margin-right: 5px; width: 18px; height: 18px;">
+                <span>Well Transfer Diagram</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="toggleNotes" checked onchange="toggleModule('notesSection')"
+                    style="margin-right: 5px; width: 18px; height: 18px;">
+                <span>Anomalies / Notes</span>
+            </label>
+        </div>
+    </div>
+
+    <div id="day0Section">
+        <h2>📅 Day 0 <input type="date" id="dateDay0" class="day-date-input"> : Reagent Prep & Flattening</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Step</th>
+                    <th>Operation</th>
+                    <th>Key Parameters</th>
+                    <th style="width: 10%;">Done</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1. Fixative</td>
+                    <td>Prep 2% PFA + 30% Sucrose</td>
+                    <td>Total 50 mL (25mL 4% PFA + 15g Sucrose + PBS)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>2. Flattening</td>
+                    <td>Slide sandwich method, light pressure</td>
+                    <td>Orientation: <b>Pial UP</b> | Spacer: 1 mm</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>3. Fixation</td>
+                    <td>4°C Overnight</td>
+                    <td>Start Time: <div class="time-box"></div>
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div id="diagramSection">
+        <h3>🎨 Well Transfer Schematic / Reference</h3>
+        <div class="plate-diagram">
+            <!-- Default CSS Diagram -->
+            <div id="defaultDiagram" style="display: flex; align-items: flex-start;">
+                <div class="well-container">
+                    <div class="well-circle">Row 1</div>
+                    <div class="well-label">Block</div>
+                    <div class="well-desc">(Blocking)</div>
+                </div>
+                <div class="arrow">➔</div>
+                <div class="well-container">
+                    <div class="well-circle">Row 2</div>
+                    <div class="well-label">Pri. Ab</div>
+                    <div class="well-desc">(Primary Ab)</div>
+                </div>
+                <div class="arrow">➔</div>
+                <div class="well-container">
+                    <div class="well-circle">Row 3</div>
+                    <div class="well-label">Sec. Ab</div>
+                    <div class="well-desc">(Secondary Ab)</div>
+                </div>
+            </div>
+
+            <!-- Image Upload Functionality -->
+            <div style="position: absolute; right: 10px; top: 10px; text-align: right;">
+                <input type="file" id="imgUpload" accept="image/*" style="display: none;"
+                    onchange="previewImage(event)">
+                <button class="file-upload-btn" onclick="document.getElementById('imgUpload').click()">📷 Insert
+                    Image</button>
+                <div class="upload-label-text" style="font-size: 10px; color: #999; margin-top: 5px;">(Click to insert
+                    schematic/photo)</div>
+            </div>
+        </div>
+
+        <!-- Image Preview Area -->
+        <div class="custom-image-area">
+            <img id="imgPreview" class="custom-image-placeholder" alt="Uploaded Schematic">
+        </div>
+
+    </div>
+
+    <div id="day1Section">
+        <h2>📅 Day 1 <input type="date" id="dateDay1" class="day-date-input"> : Blocking & Primary Ab</h2>
+        <div class="alert-box">
+            <b>⚠️ Reagent Prep (Solution A / Blocking Buffer):</b> <br>
+            <span class="handwrite-line" style="width: 50px;"></span> μL Pure NGS +
+            <span class="handwrite-line" style="width: 60px;"></span> μL PBS +
+            0.3% Triton X-100 (Optional) → Total
+            <span class="handwrite-line" style="width: 40px;"></span> mL
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Time</th>
+                    <th style="width: 20%;">Step</th>
+                    <th>Operation Details</th>
+                    <th style="width: 10%;">Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Prep Wells</b></td>
+                    <td>Add <b>600 μL Sol. A</b> to Row 1 & Row 2</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Blocking (Row 1)</b></td>
+                    <td>Transfer slices to Row 1, Shaking RT <b>2 hrs</b></td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Transfer (Row 2)</b></td>
+                    <td>Blocking done, transfer to Row 2 (Drain liquid)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr class="critical-step">
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>🔴 Primary Ab</b></td>
+                    <td>
+                        <b>Add 0.6 μL Rabbit anti-vGlut2 to well</b><br>
+                        <span style="font-size: 0.9em;">Lot #: <span class="handwrite-line"
+                                style="width: 80px;"></span></span><br>
+                        <span style="font-size: 0.85em; color: #a94442;">*Tip below surface, mix gently, avoid
+                            damage</span>
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Incubation</b></td>
+                    <td>Seal with parafilm, 4°C Shaker Overnight (16-24h)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div id="day2Section">
+        <h2>📅 Day 2 <input type="date" id="dateDay2" class="day-date-input"> : Washing, Secondary Ab & Mounting</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Time</th>
+                    <th style="width: 20%;">Step</th>
+                    <th>Operation Details</th>
+                    <th style="width: 10%;">Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Wash 1-4</b></td>
+                    <td>4-well PBS assembly line wash (1st 5s, others 3x15min), Total ~45 min</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Prep Row 3</b></td>
+                    <td>Add 600 μL <b>Sol. A</b> (Base Buffer)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Transfer (Row 3)</b></td>
+                    <td>Transfer slices from Wash 4 to Row 3</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr class="dark-step">
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>🟣 Secondary Ab</b></td>
+                    <td>
+                        <b>Add 0.6 μL Alexa 405 goat anti-rabbit IgG (1:1000)</b><br>
+                        <span style="font-size: 0.9em;">Lot #: <span class="handwrite-line"
+                                style="width: 80px;"></span></span><br>
+                        <span style="font-size: 0.85em; color: purple; font-weight: bold;">*PROTECT FROM LIGHT!</span>
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr class="dark-step">
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Incubation</b></td>
+                    <td>Shaking RT <b>2 hrs</b> (Keep in Dark)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr class="dark-step">
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Final Wash 1-4</b></td>
+                    <td>Fresh PBS, Wash 4 x 15 min <b>(In Dark)</b></td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="time-box"></div>
+                    </td>
+                    <td><b>Mounting</b></td>
+                    <td>Flatten in PBS -> Mount -> Dry (semi-dry) -> Medium (H-1000)</td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div id="notesSection">
+        <h3>📝 Anomalies / Notes:</h3>
+        <textarea class="notes-area"
+            placeholder="Record any errors, slice damage, or reagent issues here..."></textarea>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+        <div style="border-top: 1px solid #000; padding-top: 5px; width: 200px; text-align: center;">
+            <label>Signature</label>
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+    <script>
+        // Helper: Format date as YYYY-MM-DD
+        function formatDate(date) {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Toggle module visibility
+        function toggleModule(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        // Auto-fill dates
+        window.onload = function () {
+            const expDateInput = document.getElementById('expDate');
+            const day0Input = document.getElementById('dateDay0');
+            const day1Input = document.getElementById('dateDay1');
+            const day2Input = document.getElementById('dateDay2');
+
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const dayAfterTomorrow = new Date(today);
+            dayAfterTomorrow.setDate(today.getDate() + 2);
+
+            // Set default values
+            if (expDateInput) expDateInput.value = formatDate(today);
+            if (day0Input) day0Input.value = formatDate(today);
+            if (day1Input) day1Input.value = formatDate(tomorrow);
+            if (day2Input) day2Input.value = formatDate(dayAfterTomorrow);
+        };
+
+        // Image preview function
+        function previewImage(event) {
+            const reader = new FileReader();
+            const imageField = document.getElementById("imgPreview");
+            const defaultDiagram = document.getElementById("defaultDiagram");
+
+            reader.onload = function () {
+                if (reader.readyState === 2) {
+                    imageField.src = reader.result;
+                    imageField.classList.add('show');
+                    // Hide default diagram when image is uploaded
+                    if (defaultDiagram) {
+                        defaultDiagram.style.display = 'none';
+                    }
+                }
+            };
+
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
